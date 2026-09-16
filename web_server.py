@@ -341,12 +341,22 @@ if not os.path.exists(STATIC_DIR):
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
+CSS_DIR = os.path.join(BASE_DIR, "css")
+if os.path.exists(CSS_DIR):
+    app.mount("/css", StaticFiles(directory=CSS_DIR), name="css")
+
+JS_DIR = os.path.join(BASE_DIR, "js")
+if os.path.exists(JS_DIR):
+    app.mount("/js", StaticFiles(directory=JS_DIR), name="js")
+
 @app.get("/")
 def serve_index():
-    index_path = os.path.join(STATIC_DIR, "index.html")
+    index_path = os.path.join(BASE_DIR, "index.html")
+    if not os.path.exists(index_path):
+        index_path = os.path.join(STATIC_DIR, "index.html")
     if os.path.exists(index_path):
         return FileResponse(index_path)
-    return JSONResponse({"status": "SignalScope v2 Backend Online. Please create static/index.html"})
+    return JSONResponse({"status": "SignalScope v2 Backend Online. Please create index.html"})
 
 if __name__ == "__main__":
     import uvicorn
